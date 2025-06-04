@@ -5,6 +5,6 @@ import java.util.List;
 
 public class InvalidRoleException extends RuntimeException {
     public InvalidRoleException(String role) {
-        super("Invalid role: " + role + ". Please use one of the list: " + List.of(Roles.values()));
+        super("Rol invalido: " + role + ". Utiliza un rol de la lista: " + List.of(Roles.values()));
     }
 }

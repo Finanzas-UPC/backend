@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class IamExceptionsHandler {
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Username Already Exists", e.getMessage());
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Nombre de usuario existente", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidRoleException.class)
     public ResponseEntity<ErrorResponseDTO> handleRoleNotFoundException(InvalidRoleException e) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Role Not Found", e.getMessage());
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Rol no encontrado", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidPasswordException(InvalidPasswordException e) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Invalid Password", e.getMessage());
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Contraseña invalida", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundInSignInException.class)
     public ResponseEntity<ErrorResponseDTO> handleUserNotFoundInSignInException(UserNotFoundInSignInException e) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("User Not Found", e.getMessage());
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Usuario no encontrado", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

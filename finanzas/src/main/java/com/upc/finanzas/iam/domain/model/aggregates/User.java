@@ -17,15 +17,13 @@ import java.util.Set;
 @Setter
 @Entity
 public class User extends AuditableAbstractAggregateRoot<User> {
-
     @NotBlank(message = "Username is required")
-    @Email(message = "Username must be an email")
-    @Size(max = 50, message = "Username must be less than 50 characters")
+    @Size(min = 3, max = 40, message = "El nombre de usuario debe tener entre 3 y 40 caracteres")
     @Column(unique = true)
     private String username;
 
     @NotBlank(message = "Password is required")
-    @Size(max = 120, message = "Password must be less than 120 characters")
+    @Size(min = 6, max = 32, message = "La contraseña debe tener entre 6 y 32 caracteres")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

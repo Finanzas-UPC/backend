@@ -15,7 +15,7 @@ public class GlobalExceptionsHandler {
     // Maneja excepciones generales
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGlobalException(Exception e) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Internal Server Error", "Ocurrió un error inesperado.");
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Error interno", "Ocurrió un error inesperado.");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     // Jakarta Validations
@@ -24,13 +24,13 @@ public class GlobalExceptionsHandler {
         String errorMessage = e.getConstraintViolations().stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .collect(Collectors.joining(", "));
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Constraint Violation", errorMessage);
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Violación de una restricción", errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException(UserNotFoundException e) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO("User Not Found", e.getMessage());
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO("Usuario no encontrado", e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
