@@ -23,7 +23,6 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     private String username;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 6, max = 32, message = "La contraseña debe tener entre 6 y 32 caracteres")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
