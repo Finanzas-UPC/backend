@@ -29,7 +29,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     @Max(365)
     @Min(1)
     private int frequency; // Frecuencia del cupon (1 diario, 30 mensual, ...)
-    @NotNull(message = "Indicar el tipo de interés es obligatorio (efectiva o nominal)")
+    @NotNull(message = "Indicar el tipo de tasa de interés es obligatorio (efectiva o nominal)")
     @Enumerated(value = EnumType.STRING)
     private InterestType interestType; // Tipo de interés (efectiva o nominal)
     @DecimalMin("0.0")
@@ -85,7 +85,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.gracePeriodDuration = command.gracePeriodDuration();
     }
 
-    public Bond update(UpdateBondCommand command) {
+    public void update(UpdateBondCommand command) {
         this.name = command.name();
         this.amount = command.amount();
         this.duration = command.duration();
@@ -97,6 +97,5 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.emissionDate = command.emissionDate();
         this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType());
         this.gracePeriodDuration = command.gracePeriodDuration();
-        return this;
     }
 }
