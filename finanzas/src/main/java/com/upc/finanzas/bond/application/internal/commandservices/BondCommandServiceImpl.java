@@ -1,0 +1,58 @@
+package com.upc.finanzas.bond.application.internal.commandservices;
+
+import com.upc.finanzas.bond.application.internal.outboundservices.acl.ExternalUserService;
+import com.upc.finanzas.bond.domain.exceptions.BondNotFoundException;
+import com.upc.finanzas.bond.domain.model.aggregates.Bond;
+import com.upc.finanzas.bond.domain.model.commands.CreateBondCommand;
+import com.upc.finanzas.bond.domain.model.commands.DeleteBondCommand;
+import com.upc.finanzas.bond.domain.model.commands.UpdateBondCommand;
+import com.upc.finanzas.bond.domain.services.BondCommandService;
+import com.upc.finanzas.bond.infrastructure.persistence.jpa.repositories.BondRepository;
+import com.upc.finanzas.shared.domain.exceptions.UserNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class BondCommandServiceImpl implements BondCommandService {
+    private final BondRepository bondRepository;
+    private final ExternalUserService externalUserService;
+
+    public BondCommandServiceImpl(BondRepository bondRepository,
+                                  ExternalUserService externalUserService) {
+        this.bondRepository = bondRepository;
+        this.externalUserService = externalUserService;
+    }
+
+    @Override
+    public Long handle(CreateBondCommand command) {
+        // Se verifica si el usuario existe
+        var user = externalUserService.fetchUserById(command.userId());
+        if (user.isEmpty()) throw new UserNotFoundException(command.userId());
+        // Si el usuario existe, se crea el bono
+        var bond = new Bond(user.get(), command);
+        bondRepository.save(bond);
+        // Se retorna el ID del bono creado
+        return bond.getId();
+    }
+
+    @Override
+    public Long handle(UpdateBondCommand command) {
+        // Se verifica si el bono existe
+        var existingBond = bondRepository.findById(command.bondId());
+        if (existingBond.isEmpty()) throw new BondNotFoundException(command.bondId());
+        // Si el bono existe, se actualiza
+        var bond = existingBond.get();
+        bond.update(command);
+        bondRepository.save(bond);
+        // Se retorna el ID del bono actualizado
+        return bond.getId();
+    }
+
+    @Override
+    public void handle(DeleteBondCommand command) {
+        // Se verifica si el bono existe
+        var bond = bondRepository.findById(command.bondId());
+        if (bond.isEmpty()) throw new BondNotFoundException(command.bondId());
+        // Si el bono existe, se elimina
+        bondRepository.delete(bond.get());
+    }
+}
