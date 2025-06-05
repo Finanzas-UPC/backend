@@ -1,6 +1,7 @@
 package com.upc.finanzas.bond.domain.model.aggregates;
 
 import com.upc.finanzas.bond.domain.model.commands.CreateBondCommand;
+import com.upc.finanzas.bond.domain.model.commands.UpdateBondCommand;
 import com.upc.finanzas.bond.domain.model.valueobjects.GracePeriodType;
 import com.upc.finanzas.bond.domain.model.valueobjects.InterestType;
 import com.upc.finanzas.iam.domain.model.aggregates.User;
@@ -82,5 +83,20 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.emissionDate = command.emissionDate();
         this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType());
         this.gracePeriodDuration = command.gracePeriodDuration();
+    }
+
+    public Bond update(UpdateBondCommand command) {
+        this.name = command.name();
+        this.amount = command.amount();
+        this.duration = command.duration();
+        this.frequency = command.frequency();
+        this.interestType = InterestType.valueOf(command.interestType());
+        this.interestRate = command.interestRate();
+        this.capitalization = command.capitalization();
+        this.annualDiscountRate = command.annualDiscountRate();
+        this.emissionDate = command.emissionDate();
+        this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType());
+        this.gracePeriodDuration = command.gracePeriodDuration();
+        return this;
     }
 }
