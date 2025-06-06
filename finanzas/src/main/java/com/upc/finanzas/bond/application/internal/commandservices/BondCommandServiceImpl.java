@@ -1,28 +1,45 @@
 package com.upc.finanzas.bond.application.internal.commandservices;
 
 import com.upc.finanzas.bond.application.internal.outboundservices.acl.ExternalUserService;
+import com.upc.finanzas.bond.domain.exceptions.BondCashFlowException;
+import com.upc.finanzas.bond.domain.exceptions.BondMetricsException;
 import com.upc.finanzas.bond.domain.exceptions.BondNotFoundException;
 import com.upc.finanzas.bond.domain.model.aggregates.Bond;
 import com.upc.finanzas.bond.domain.model.commands.CreateBondCommand;
 import com.upc.finanzas.bond.domain.model.commands.DeleteBondCommand;
 import com.upc.finanzas.bond.domain.model.commands.UpdateBondCommand;
+import com.upc.finanzas.bond.domain.services.BondCalculatorService;
 import com.upc.finanzas.bond.domain.services.BondCommandService;
+import com.upc.finanzas.bond.infrastructure.persistence.jpa.repositories.BondMetricsRepository;
 import com.upc.finanzas.bond.infrastructure.persistence.jpa.repositories.BondRepository;
+import com.upc.finanzas.bond.infrastructure.persistence.jpa.repositories.CashFlowItemRepository;
 import com.upc.finanzas.shared.domain.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BondCommandServiceImpl implements BondCommandService {
     private final BondRepository bondRepository;
+    private final BondMetricsRepository bondMetricsRepository;
+    private final CashFlowItemRepository cashFlowItemRepository;
+    private final BondCalculatorService bondCalculatorService;
     private final ExternalUserService externalUserService;
 
-    public BondCommandServiceImpl(BondRepository bondRepository,
-                                  ExternalUserService externalUserService) {
+    public BondCommandServiceImpl(
+            BondRepository bondRepository,
+            BondMetricsRepository bondMetricsRepository,
+            CashFlowItemRepository cashFlowItemRepository,
+            BondCalculatorService bondCalculatorService,
+            ExternalUserService externalUserService) {
         this.bondRepository = bondRepository;
+        this.bondMetricsRepository = bondMetricsRepository;
+        this.cashFlowItemRepository = cashFlowItemRepository;
+        this.bondCalculatorService = bondCalculatorService;
         this.externalUserService = externalUserService;
     }
 
     @Override
+    @Transactional
     public Long handle(CreateBondCommand command) {
         // Se verifica si el usuario existe
         var user = externalUserService.fetchUserById(command.userId());
@@ -30,6 +47,14 @@ public class BondCommandServiceImpl implements BondCommandService {
         // Si el usuario existe, se crea el bono
         var bond = new Bond(user.get(), command);
         bondRepository.save(bond);
+        // Se generan los flujos de caja del bono
+        var cashFlowItems = bondCalculatorService.generateCashFlowItems(bond);
+        // Se guardan los flujos de caja generados
+        cashFlowItemRepository.saveAll(cashFlowItems);
+        if (cashFlowItems.isEmpty()) throw new BondCashFlowException();
+        // Se generan las métricas del bono
+        //var bondMetrics = bondCalculatorService.generateBondMetrics(bond, cashFlowItems);
+        //if (bondMetrics.isEmpty()) throw new BondMetricsException()
         // Se retorna el ID del bono creado
         return bond.getId();
     }
