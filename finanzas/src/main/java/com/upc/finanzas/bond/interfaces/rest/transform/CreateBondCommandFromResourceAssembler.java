@@ -3,8 +3,13 @@ package com.upc.finanzas.bond.interfaces.rest.transform;
 import com.upc.finanzas.bond.domain.model.commands.CreateBondCommand;
 import com.upc.finanzas.bond.interfaces.rest.resources.CreateBondResource;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class CreateBondCommandFromResourceAssembler {
     public static CreateBondCommand toCommandFromResource(CreateBondResource resource) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate parsedDate = LocalDate.parse(resource.emissionDate(), formatter);
         return new CreateBondCommand(
                 resource.userId(),
                 resource.name(),
@@ -16,7 +21,7 @@ public class CreateBondCommandFromResourceAssembler {
                 resource.interestRate(),
                 resource.capitalization(),
                 resource.marketRate(),
-                resource.emissionDate(),
+                parsedDate,
                 resource.gracePeriodType(),
                 resource.gracePeriodDuration()
         );

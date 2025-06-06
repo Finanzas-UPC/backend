@@ -14,7 +14,7 @@ public record CreateBondResource(
         BigDecimal interestRate,
         int capitalization,
         BigDecimal marketRate,
-        LocalDate emissionDate,
+        String emissionDate,
         String gracePeriodType,
         int gracePeriodDuration
 ) {}

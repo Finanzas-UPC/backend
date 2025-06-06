@@ -1,16 +1,22 @@
 package com.upc.finanzas.bond.interfaces.rest;
 
+import com.upc.finanzas.bond.application.internal.queryservices.CashFlowItemQueryServiceImpl;
 import com.upc.finanzas.bond.domain.exceptions.BondNotFoundException;
 import com.upc.finanzas.bond.domain.model.aggregates.Bond;
 import com.upc.finanzas.bond.domain.model.commands.DeleteBondCommand;
+import com.upc.finanzas.bond.domain.model.entities.CashFlowItem;
 import com.upc.finanzas.bond.domain.model.queries.GetAllBondsByUserIdQuery;
 import com.upc.finanzas.bond.domain.model.queries.GetBondByIdQuery;
+import com.upc.finanzas.bond.domain.model.queries.GetCashFlowByBondId;
 import com.upc.finanzas.bond.domain.services.BondCommandService;
 import com.upc.finanzas.bond.domain.services.BondQueryService;
+import com.upc.finanzas.bond.domain.services.CashFlowItemQueryService;
 import com.upc.finanzas.bond.interfaces.rest.resources.BondResource;
+import com.upc.finanzas.bond.interfaces.rest.resources.CashFlowItemResource;
 import com.upc.finanzas.bond.interfaces.rest.resources.CreateBondResource;
 import com.upc.finanzas.bond.interfaces.rest.resources.UpdateBondResource;
 import com.upc.finanzas.bond.interfaces.rest.transform.BondResourceFromEntityAssembler;
+import com.upc.finanzas.bond.interfaces.rest.transform.CashFlowItemResourceFromEntityAssembler;
 import com.upc.finanzas.bond.interfaces.rest.transform.CreateBondCommandFromResourceAssembler;
 import com.upc.finanzas.bond.interfaces.rest.transform.UpdateBondCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,10 +37,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class BondsController {
     private final BondCommandService bondCommandService;
     private final BondQueryService bondQueryService;
+    private final CashFlowItemQueryService cashFlowItemQueryService;
 
-    public BondsController(BondCommandService bondCommandService, BondQueryService bondQueryService) {
+    public BondsController(BondCommandService bondCommandService, BondQueryService bondQueryService, CashFlowItemQueryService cashFlowItemQueryService) {
         this.bondCommandService = bondCommandService;
         this.bondQueryService = bondQueryService;
+        this.cashFlowItemQueryService = cashFlowItemQueryService;
     }
 
     @GetMapping("/user/{userId}")
@@ -52,6 +60,15 @@ public class BondsController {
         if (bond.isEmpty()) throw new BondNotFoundException(id);
         var bondResource = BondResourceFromEntityAssembler.toResourceFromEntity(bond.get());
         return ResponseEntity.ok(bondResource);
+    }
+
+    @GetMapping("/{id}/cashflow")
+    public ResponseEntity<List<CashFlowItemResource>> getBondCashFlowById(@PathVariable Long id) {
+        var query = new GetCashFlowByBondId(id);
+        List<CashFlowItem> cashFlow = cashFlowItemQueryService.handle(query);
+        if (cashFlow.isEmpty()) throw new BondNotFoundException(id);
+        var cashFlowResource = cashFlow.stream().map(CashFlowItemResourceFromEntityAssembler::toResourceFromEntity).collect(Collectors.toList());
+        return ResponseEntity.ok(cashFlowResource);
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
 package com.upc.finanzas.bond.domain.model.aggregates;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.upc.finanzas.bond.domain.model.commands.CreateBondCommand;
 import com.upc.finanzas.bond.domain.model.commands.UpdateBondCommand;
 import com.upc.finanzas.bond.domain.model.valueobjects.GracePeriodType;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,6 +52,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     @Digits(integer = 8, fraction = 4)
     private BigDecimal marketRate;
     @NotNull(message = "La fecha de emisión es obligatoria")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate emissionDate;
     @NotNull(message = "El tipo de periodo de gracia es obligatorio (total, parcial o ninguno)")
     @Enumerated(EnumType.STRING)
@@ -64,12 +67,12 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.marketValue = command.marketValue();
         this.duration = command.duration();
         this.frequency = command.frequency();
-        this.interestType = InterestType.valueOf(command.interestType());
+        this.interestType = InterestType.valueOf(command.interestType().toUpperCase());
         this.interestRate = command.interestRate();
         this.capitalization = command.capitalization();
         this.marketRate = command.marketRate();
         this.emissionDate = command.emissionDate();
-        this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType());
+        this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType().toUpperCase());
         this.gracePeriodDuration = command.gracePeriodDuration();
     }
 
@@ -79,12 +82,12 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.marketValue = command.marketValue();
         this.duration = command.duration();
         this.frequency = command.frequency();
-        this.interestType = InterestType.valueOf(command.interestType());
+        this.interestType = InterestType.valueOf(command.interestType().toUpperCase());
         this.interestRate = command.interestRate();
         this.capitalization = command.capitalization();
         this.marketRate = command.marketRate();
         this.emissionDate = command.emissionDate();
-        this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType());
+        this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType().toUpperCase());
         this.gracePeriodDuration = command.gracePeriodDuration();
     }
 }

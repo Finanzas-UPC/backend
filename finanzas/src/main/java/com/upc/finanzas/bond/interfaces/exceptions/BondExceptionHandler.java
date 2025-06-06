@@ -1,8 +1,6 @@
 package com.upc.finanzas.bond.interfaces.exceptions;
 
-import com.upc.finanzas.bond.domain.exceptions.BondNotFoundException;
-import com.upc.finanzas.bond.domain.exceptions.InvalidGracePeriodTypeException;
-import com.upc.finanzas.bond.domain.exceptions.InvalidInterestTypeException;
+import com.upc.finanzas.bond.domain.exceptions.*;
 import com.upc.finanzas.shared.infrastructure.interfaces.responses.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +25,17 @@ public class BondExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleInvalidInterestTypeException(InvalidInterestTypeException e) {
         ErrorResponseDTO error = new ErrorResponseDTO("Tipo de interés inválido", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BondCashFlowException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBondCashFlowException(BondCashFlowException e) {
+        ErrorResponseDTO error = new ErrorResponseDTO("Flujos de caja no generados", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BondMetricsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBondMetricsException(BondMetricsException e) {
+        ErrorResponseDTO error = new ErrorResponseDTO("Métricas del bono no generadas", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
