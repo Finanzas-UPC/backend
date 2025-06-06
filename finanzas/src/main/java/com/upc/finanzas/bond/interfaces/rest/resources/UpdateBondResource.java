@@ -6,12 +6,13 @@ import java.time.LocalDate;
 public record UpdateBondResource(
         String name,
         BigDecimal amount,
+        BigDecimal marketValue,
         int duration,
         int frequency,
         String interestType,
         BigDecimal interestRate,
         int capitalization,
-        BigDecimal annualDiscountRate,
+        BigDecimal marketRate,
         LocalDate emissionDate,
         String gracePeriodType,
         int gracePeriodDuration
