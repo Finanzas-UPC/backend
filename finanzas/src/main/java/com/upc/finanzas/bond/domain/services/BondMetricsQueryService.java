@@ -1,0 +1,10 @@
+package com.upc.finanzas.bond.domain.services;
+
+import com.upc.finanzas.bond.domain.model.entities.BondMetrics;
+import com.upc.finanzas.bond.domain.model.queries.GetBondMetricsById;
+
+import java.util.Optional;
+
+public interface BondMetricsQueryService {
+    Optional<BondMetrics> handle(GetBondMetricsById query);
+}
