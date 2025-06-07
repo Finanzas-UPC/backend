@@ -49,12 +49,14 @@ public class BondCommandServiceImpl implements BondCommandService {
         bondRepository.save(bond);
         // Se generan los flujos de caja del bono
         var cashFlowItems = bondCalculatorService.generateCashFlowItems(bond);
+        if (cashFlowItems.isEmpty()) throw new BondCashFlowException();
         // Se guardan los flujos de caja generados
         cashFlowItemRepository.saveAll(cashFlowItems);
-        if (cashFlowItems.isEmpty()) throw new BondCashFlowException();
         // Se generan las métricas del bono
-        //var bondMetrics = bondCalculatorService.generateBondMetrics(bond, cashFlowItems);
-        //if (bondMetrics.isEmpty()) throw new BondMetricsException()
+        var bondMetrics = bondCalculatorService.generateBondMetrics(bond, cashFlowItems)
+                .orElseThrow(BondMetricsException::new);
+        // Se guardan las métricas del bono
+        bondMetricsRepository.save(bondMetrics);
         // Se retorna el ID del bono creado
         return bond.getId();
     }

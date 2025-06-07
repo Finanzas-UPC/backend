@@ -57,7 +57,7 @@ public class CashFlowItem {
     private BigDecimal issuerCashFlow; // Flujo del emisor (egreso para el emisor)
     @NotNull
     @Digits(integer = 8, fraction = 2)
-    private BigDecimal investorCashFlow; // Flujo del bonista (ingreso para el inversionista)
+    private BigDecimal bondHolderCashFlow; // Flujo del bonista (ingreso para el inversionista)
     @NotNull
     @Digits(integer = 8, fraction = 2)
     private BigDecimal discountedFlow; // Flujo actualizado descontado con la tasa del mercado

@@ -103,8 +103,30 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
 
     @Override
     public Optional<BondMetrics> generateBondMetrics(Bond bond, List<CashFlowItem> cashFlowItems) {
-        return Optional.empty();
+        BigDecimal annualRateDecimal = bond.getMarketRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+        int frequencyDays = 360 / bond.getFrequency();
+        BigDecimal marketRatePerPeriod = calculatePeriodicRate(annualRateDecimal, frequencyDays);
+        // Calcular métricas del bono
+        BigDecimal duration = calculateDuration(cashFlowItems);
+        BigDecimal convexity = calculateConvexity(cashFlowItems, marketRatePerPeriod, frequencyDays);
+        BigDecimal modifiedDuration = calculateModifiedDuration(duration, marketRatePerPeriod);
+        BigDecimal totalDurationConvexity = calculateTotalDurationConvexity(duration, convexity);
+        BigDecimal tcea = calculateTCEA(cashFlowItems, bond.getFrequency());
+        BigDecimal trea = calculateTREA(cashFlowItems, bond.getFrequency());
+
+        BondMetrics metrics = new BondMetrics(
+                null, bond,
+                duration.setScale(2, RoundingMode.HALF_UP),
+                convexity.setScale(2, RoundingMode.HALF_UP),
+                totalDurationConvexity.setScale(2, RoundingMode.HALF_UP),
+                modifiedDuration.setScale(2, RoundingMode.HALF_UP),
+                tcea.setScale(4, RoundingMode.HALF_UP),
+                trea.setScale(4, RoundingMode.HALF_UP)
+        );
+
+        return Optional.of(metrics);
     }
+
 
     private BigDecimal getAnnualEffectiveRate(Bond bond) {
         if (bond.getInterestType().equals(InterestType.EFECTIVA)) {
@@ -144,4 +166,50 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         return discountedFlow.multiply(periodFactor, mc);
     }
 
+    private BigDecimal calculateDuration(List<CashFlowItem> cashFlowItems) {
+        BigDecimal sum = BigDecimal.ZERO;
+        BigDecimal totalDiscountedFlow = BigDecimal.ZERO;
+
+        for (CashFlowItem item : cashFlowItems) {
+            sum = sum.add(item.getDiscountedFlowTimesPeriod());
+            totalDiscountedFlow = totalDiscountedFlow.add(item.getDiscountedFlow());
+        }
+
+        if (totalDiscountedFlow.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+        return sum.divide(totalDiscountedFlow, 10, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateConvexity(List<CashFlowItem> cashFlowItems, BigDecimal ratePerPeriod, int frequencyDays) {
+        BigDecimal sumConvexityFactors = BigDecimal.ZERO;
+        BigDecimal sumDiscountedFlows = BigDecimal.ZERO;
+
+        for (CashFlowItem item : cashFlowItems) {
+            sumConvexityFactors = sumConvexityFactors.add(item.getConvexityFactor());
+            sumDiscountedFlows = sumDiscountedFlows.add(item.getDiscountedFlow());
+        }
+
+        if (sumDiscountedFlows.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+
+        BigDecimal rateFactor = BigDecimal.ONE.add(ratePerPeriod).pow(2);
+        BigDecimal freqFactor = BigDecimal.valueOf(360.0 / frequencyDays).pow(2);
+
+        return sumConvexityFactors
+                .divide(rateFactor.multiply(sumDiscountedFlows).multiply(freqFactor), 10, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateModifiedDuration(BigDecimal duration, BigDecimal ratePerPeriod) {
+        return duration.divide(BigDecimal.ONE.add(ratePerPeriod), 10, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateTotalDurationConvexity(BigDecimal duration, BigDecimal convexity) {
+        return duration.add(convexity);
+    }
+
+    private BigDecimal calculateTCEA(List<CashFlowItem> cashFlowItems, int frequency) {
+        return BigDecimal.ZERO;
+    }
+
+    private BigDecimal calculateTREA(List<CashFlowItem> cashFlowItems, int frequency) {
+        return BigDecimal.ZERO;
+    }
 }
