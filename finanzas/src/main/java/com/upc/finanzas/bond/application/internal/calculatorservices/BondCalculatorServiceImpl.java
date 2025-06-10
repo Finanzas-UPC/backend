@@ -6,6 +6,8 @@ import com.upc.finanzas.bond.domain.model.entities.CashFlowItem;
 import com.upc.finanzas.bond.domain.model.valueobjects.GracePeriodType;
 import com.upc.finanzas.bond.domain.model.valueobjects.InterestType;
 import com.upc.finanzas.bond.domain.services.BondCalculatorService;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.solvers.BrentSolver;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,7 +38,7 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
 
         // Período 0: flujo inicial
         cashFlowItems.add(new CashFlowItem(null, bond, 0, currentDate, false, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, bond.getAmount(),
-                BigDecimal.ZERO, bond.getAmount().negate(), bond.getAmount(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO
+                BigDecimal.ZERO, bond.getAmount(), bond.getAmount().negate(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO
         ));
 
         // Período 1 a N: flujos periódicos
@@ -127,7 +129,6 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         return Optional.of(metrics);
     }
 
-
     private BigDecimal getAnnualEffectiveRate(Bond bond) {
         if (bond.getInterestType().equals(InterestType.EFECTIVA)) {
             BigDecimal rate = bond.getInterestRate().divide(BigDecimal.valueOf(100), mc);
@@ -205,11 +206,35 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         return duration.add(convexity);
     }
 
-    private BigDecimal calculateTCEA(List<CashFlowItem> cashFlowItems, int frequency) {
-        return BigDecimal.ZERO;
+    private BigDecimal calculateIRR(List<CashFlowItem> cashFlowItems, java.util.function.Function<CashFlowItem, BigDecimal> cashFlowSelector) {
+        double[] cashFlows = cashFlowItems.stream()
+                .map(cashFlowSelector)
+                .mapToDouble(BigDecimal::doubleValue)
+                .toArray();
+
+        UnivariateFunction npvFunction = r -> {
+            double npv = 0.0;
+            for (int t = 0; t < cashFlows.length; t++) {
+                npv += cashFlows[t] / Math.pow(1 + r, t);
+            }
+            return npv;
+        };
+
+        BrentSolver solver = new BrentSolver(1e-10, 1e-14);
+        double irr = solver.solve(1000, npvFunction, -0.9999, 1.0, 0.1); // intervalo de búsqueda
+
+        return BigDecimal.valueOf(irr).setScale(10, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateTREA(List<CashFlowItem> cashFlowItems, int frequency) {
-        return BigDecimal.ZERO;
+        BigDecimal tir = calculateIRR(cashFlowItems, CashFlowItem::getBondHolderCashFlow);
+        double annualRate = Math.pow(1 + tir.doubleValue(), frequency) - 1;
+        return BigDecimal.valueOf(annualRate).setScale(10, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateTCEA(List<CashFlowItem> cashFlowItems, int frequency) {
+        BigDecimal tir = calculateIRR(cashFlowItems, CashFlowItem::getIssuerCashFlow);
+        double annualRate = Math.pow(1 + tir.doubleValue(), frequency) - 1;
+        return BigDecimal.valueOf(annualRate).setScale(10, RoundingMode.HALF_UP);
     }
 }
