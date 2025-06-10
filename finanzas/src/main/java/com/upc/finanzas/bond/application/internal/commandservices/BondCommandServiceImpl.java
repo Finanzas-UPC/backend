@@ -62,24 +62,40 @@ public class BondCommandServiceImpl implements BondCommandService {
     }
 
     @Override
+    @Transactional
     public Long handle(UpdateBondCommand command) {
-        // Se verifica si el bono existe
         var existingBond = bondRepository.findById(command.bondId());
         if (existingBond.isEmpty()) throw new BondNotFoundException(command.bondId());
-        // Si el bono existe, se actualiza
+
         var bond = existingBond.get();
         bond.update(command);
         bondRepository.save(bond);
-        // Se retorna el ID del bono actualizado
+        // Eliminar flujos anteriores
+        cashFlowItemRepository.deleteAllByBond_Id(bond.getId());
+        // Recalcular flujos
+        var cashFlowItems = bondCalculatorService.generateCashFlowItems(bond);
+        if (cashFlowItems.isEmpty()) throw new BondCashFlowException();
+        cashFlowItemRepository.saveAll(cashFlowItems);
+        // Recalcular métricas
+        var bondMetrics = bondCalculatorService.generateBondMetrics(bond, cashFlowItems)
+                .orElseThrow(BondMetricsException::new);
+        var existingMetrics = bondMetricsRepository.findByBond_Id(bond.getId())
+                        .orElseThrow(BondMetricsException::new);
+        existingMetrics.update(bondMetrics);
+        bondMetricsRepository.save(existingMetrics);
+        // Retornar el ID del bono actualizado
         return bond.getId();
     }
 
     @Override
+    @Transactional
     public void handle(DeleteBondCommand command) {
-        // Se verifica si el bono existe
         var bond = bondRepository.findById(command.bondId());
         if (bond.isEmpty()) throw new BondNotFoundException(command.bondId());
-        // Si el bono existe, se elimina
+
+        // Eliminar dependencias antes del bono
+        cashFlowItemRepository.deleteAllByBond_Id(command.bondId());
+        bondMetricsRepository.deleteByBond_Id(command.bondId());
         bondRepository.delete(bond.get());
     }
 }

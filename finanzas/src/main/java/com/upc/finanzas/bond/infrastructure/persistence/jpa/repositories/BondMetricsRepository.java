@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface BondMetricsRepository extends JpaRepository<BondMetrics, Long> {
     Optional<BondMetrics> findByBond_Id(Long bondId);
+    void deleteByBond_Id(Long bondId);
 }

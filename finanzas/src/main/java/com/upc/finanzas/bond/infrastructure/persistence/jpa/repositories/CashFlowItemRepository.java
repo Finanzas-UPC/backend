@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CashFlowItemRepository extends JpaRepository<CashFlowItem, Long> {
     List<CashFlowItem> findAllByBond_Id(Long bondId);
+    void deleteAllByBond_Id(Long bondId);
 }

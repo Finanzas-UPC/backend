@@ -44,4 +44,13 @@ public class BondMetrics {
     @NotNull
     @Digits(integer = 3, fraction = 4)
     private BigDecimal trea;
+
+    public void update(BondMetrics updatedMetrics) {
+        this.duration = updatedMetrics.getDuration();
+        this.convexity = updatedMetrics.getConvexity();
+        this.totalDurationConvexity = updatedMetrics.getTotalDurationConvexity();
+        this.modifiedDuration = updatedMetrics.getModifiedDuration();
+        this.tcea = updatedMetrics.getTcea();
+        this.trea = updatedMetrics.getTrea();
+    }
 }
