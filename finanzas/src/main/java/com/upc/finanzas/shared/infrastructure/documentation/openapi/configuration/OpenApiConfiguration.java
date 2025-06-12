@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfiguration {
     @Bean
-    public OpenAPI agrotechPlatformOpenApi() {
+    public OpenAPI bonoAppPlatformOpenApi() {
     // General configuration
         var openApi = new OpenAPI();
         openApi
