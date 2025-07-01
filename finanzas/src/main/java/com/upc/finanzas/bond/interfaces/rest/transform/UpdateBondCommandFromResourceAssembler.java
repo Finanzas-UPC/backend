@@ -23,7 +23,12 @@ public class UpdateBondCommandFromResourceAssembler {
                 resource.marketRate(),
                 parsedDate,
                 resource.gracePeriodType(),
-                resource.gracePeriodDuration()
+                resource.gracePeriodDuration(),
+                resource.primeRate(),
+                resource.structuringRate(),
+                resource.placementRate(),
+                resource.floatRate(),
+                resource.cavaliRate()
         );
     }
 }

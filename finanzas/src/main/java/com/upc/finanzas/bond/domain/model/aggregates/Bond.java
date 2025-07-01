@@ -59,6 +59,21 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     private GracePeriodType gracePeriodType; // Tipo de periodo de gracia (total, parcial o sin periodo de gracia)
     @Min(0)
     private int gracePeriodDuration;
+    @DecimalMax("100.0")
+    @Digits(integer = 8, fraction = 4)
+    private BigDecimal primeRate; // Tasa prima (%)
+    @DecimalMax("100.0")
+    @Digits(integer = 8, fraction = 4)
+    private BigDecimal structuringRate; // Tasa de estructuración (%)
+    @DecimalMax("100.0")
+    @Digits(integer = 8, fraction = 4)
+    private BigDecimal placementRate; // Tasa de colocación (%)
+    @DecimalMax("100.0")
+    @Digits(integer = 8, fraction = 4)
+    private BigDecimal floatRate; // Tasa de flotación (%)
+    @DecimalMax("100.0")
+    @Digits(integer = 8, fraction = 4)
+    private BigDecimal cavaliRate; // Tasa de CAVALI (%)
 
     public Bond (User user, CreateBondCommand command) {
         this.user = user;
@@ -74,6 +89,11 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.emissionDate = command.emissionDate();
         this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType().toUpperCase());
         this.gracePeriodDuration = command.gracePeriodDuration();
+        this.primeRate = command.primeRate();
+        this.structuringRate = command.structuringRate();
+        this.placementRate = command.placementRate();
+        this.floatRate = command.floatRate();
+        this.cavaliRate = command.cavaliRate();
     }
 
     public void update(UpdateBondCommand command) {
@@ -89,5 +109,10 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.emissionDate = command.emissionDate();
         this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType().toUpperCase());
         this.gracePeriodDuration = command.gracePeriodDuration();
+        this.primeRate = command.primeRate();
+        this.structuringRate = command.structuringRate();
+        this.placementRate = command.placementRate();
+        this.floatRate = command.floatRate();
+        this.cavaliRate = command.cavaliRate();
     }
 }

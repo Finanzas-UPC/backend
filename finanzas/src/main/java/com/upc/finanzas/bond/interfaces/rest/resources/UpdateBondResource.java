@@ -15,6 +15,11 @@ public record UpdateBondResource(
         BigDecimal marketRate,
         String emissionDate,
         String gracePeriodType,
-        int gracePeriodDuration
+        int gracePeriodDuration,
+        BigDecimal primeRate,
+        BigDecimal structuringRate,
+        BigDecimal placementRate,
+        BigDecimal floatRate,
+        BigDecimal cavaliRate
 ) {
 }

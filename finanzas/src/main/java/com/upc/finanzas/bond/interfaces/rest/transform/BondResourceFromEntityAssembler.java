@@ -22,7 +22,12 @@ public class BondResourceFromEntityAssembler {
                 entity.getMarketRate(),
                 entity.getEmissionDate().format(formatter),
                 entity.getGracePeriodType().toString(),
-                entity.getGracePeriodDuration()
+                entity.getGracePeriodDuration(),
+                entity.getPrimeRate(),
+                entity.getStructuringRate(),
+                entity.getPlacementRate(),
+                entity.getFloatRate(),
+                entity.getCavaliRate()
         );
     }
 }
