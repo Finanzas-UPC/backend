@@ -10,7 +10,6 @@ public class BondMetricsResourceFromEntityAssembler {
                 entity.getBond().getId(),
                 entity.getDuration(),
                 entity.getConvexity(),
-                entity.getTotalDurationConvexity(),
                 entity.getModifiedDuration(),
                 entity.getTcea(),
                 entity.getTrea()

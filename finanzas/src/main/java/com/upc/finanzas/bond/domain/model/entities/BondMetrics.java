@@ -21,6 +21,12 @@ public class BondMetrics {
     @JoinColumn(name = "bond_id", nullable = false)
     private Bond bond;
     /**
+     * Precio máximo del bono
+     */
+    @NotNull
+    @Digits(integer = 5, fraction = 2)
+    private BigDecimal maxPrice;
+    /**
      * Ratios de decisión del bono
      */
     @NotNull
@@ -29,9 +35,6 @@ public class BondMetrics {
     @NotNull
     @Digits(integer = 6, fraction = 2)
     private BigDecimal convexity;
-    @NotNull
-    @Digits(integer = 6, fraction = 2)
-    private BigDecimal totalDurationConvexity;
     @NotNull
     @Digits(integer = 5, fraction = 2)
     private BigDecimal modifiedDuration;
@@ -48,7 +51,6 @@ public class BondMetrics {
     public void update(BondMetrics updatedMetrics) {
         this.duration = updatedMetrics.getDuration();
         this.convexity = updatedMetrics.getConvexity();
-        this.totalDurationConvexity = updatedMetrics.getTotalDurationConvexity();
         this.modifiedDuration = updatedMetrics.getModifiedDuration();
         this.tcea = updatedMetrics.getTcea();
         this.trea = updatedMetrics.getTrea();

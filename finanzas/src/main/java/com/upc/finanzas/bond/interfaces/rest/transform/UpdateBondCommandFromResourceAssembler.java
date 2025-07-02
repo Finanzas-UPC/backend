@@ -24,6 +24,7 @@ public class UpdateBondCommandFromResourceAssembler {
                 parsedDate,
                 resource.gracePeriodType(),
                 resource.gracePeriodDuration(),
+                resource.currency(),
                 resource.primeRate(),
                 resource.structuringRate(),
                 resource.placementRate(),

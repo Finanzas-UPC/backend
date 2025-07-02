@@ -50,7 +50,7 @@ public class CashFlowItem {
     @PositiveOrZero
     private BigDecimal totalPayment; // Cuota total pagada en este periodo (interés + amortización)
     /**
-     * Valores para calcular los ratios de decisión y los indicadores de rentabilidad
+     * Flujo de caja del emisor y del bonista
      */
     @NotNull
     @Digits(integer = 8, fraction = 2)
@@ -58,9 +58,12 @@ public class CashFlowItem {
     @NotNull
     @Digits(integer = 8, fraction = 2)
     private BigDecimal bondHolderCashFlow; // Flujo del bonista (ingreso para el inversionista)
+    /**
+     * Valores intermedios para cálculos financieros
+     */
     @NotNull
     @Digits(integer = 8, fraction = 2)
-    private BigDecimal discountedFlow; // Flujo actualizado descontado con la tasa del mercado
+    private BigDecimal discountedFlow; // Flujo actualizado descontado con la COK
     @NotNull
     @Digits(integer = 8, fraction = 2)
     private BigDecimal discountedFlowTimesPeriod; // Producto del flujo actualizado por el periodo (para calcular duración)

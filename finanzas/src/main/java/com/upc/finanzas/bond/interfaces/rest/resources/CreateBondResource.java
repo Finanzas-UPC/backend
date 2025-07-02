@@ -17,6 +17,7 @@ public record CreateBondResource(
         String emissionDate,
         String gracePeriodType,
         int gracePeriodDuration,
+        String currency,
         BigDecimal primeRate,
         BigDecimal structuringRate,
         BigDecimal placementRate,

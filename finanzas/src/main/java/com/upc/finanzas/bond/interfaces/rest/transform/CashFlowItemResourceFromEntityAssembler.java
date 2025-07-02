@@ -20,10 +20,7 @@ public class CashFlowItemResourceFromEntityAssembler {
                 entity.getFinalBalance(),
                 entity.getTotalPayment(),
                 entity.getIssuerCashFlow(),
-                entity.getBondHolderCashFlow(),
-                entity.getDiscountedFlow(),
-                entity.getDiscountedFlowTimesPeriod(),
-                entity.getConvexityFactor()
+                entity.getBondHolderCashFlow()
         );
     }
 }

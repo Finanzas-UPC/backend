@@ -15,8 +15,5 @@ public record CashFlowItemResource(
         BigDecimal finalBalance,
         BigDecimal totalPayment,
         BigDecimal issuerCashFlow,
-        BigDecimal bondHolderCashFlow,
-        BigDecimal discountedFlow,
-        BigDecimal discountedFlowTimesPeriod,
-        BigDecimal convexityFactor
+        BigDecimal bondHolderCashFlow
 ) { }

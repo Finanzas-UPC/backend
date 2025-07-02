@@ -7,7 +7,6 @@ public record BondMetricsResource(
         Long bondId,
         BigDecimal duration,
         BigDecimal convexity,
-        BigDecimal totalDurationConvexity,
         BigDecimal modifiedDuration,
         BigDecimal tcea,
         BigDecimal trea
