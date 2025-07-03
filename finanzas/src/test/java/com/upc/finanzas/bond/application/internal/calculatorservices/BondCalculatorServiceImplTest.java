@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,23 +25,23 @@ class BondCalculatorServiceImplTest {
         User user = new User("piero", "12345678");
         CreateBondCommand command = new CreateBondCommand(
                 user.getId(),
-                "Bono de prueba",
-                BigDecimal.valueOf(30000),
-                BigDecimal.valueOf(40000),
+                "Bono de prueba 2",
+                BigDecimal.valueOf(10000),
+                BigDecimal.valueOf(10500),
                 5,
-                4,
-                "NOMINAL",
-                BigDecimal.valueOf(10.0),
-                30,
+                3,
+                "EFECTIVA",
+                BigDecimal.valueOf(8.0),
+                1,
                 BigDecimal.valueOf(4.5),
                 LocalDate.of(2025, 5, 10),
-                "TOTAL",
-                5,
+                "PARCIAL",
+                2,
                 "PEN",
                 BigDecimal.valueOf(1.0),
-                BigDecimal.valueOf(0.25),
+                BigDecimal.valueOf(1.0),
+                BigDecimal.valueOf(1.25),
                 BigDecimal.valueOf(0.45),
-                BigDecimal.valueOf(0.5),
                 BigDecimal.valueOf(0.5)
         );
         return new Bond(user, command);

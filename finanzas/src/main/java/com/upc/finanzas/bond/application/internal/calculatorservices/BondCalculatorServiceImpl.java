@@ -28,8 +28,7 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         int totalPeriods = bond.getDuration() * bond.getFrequency();
         BigDecimal TEA = getTEA(bond);
         BigDecimal periodInterestRate = getPeriodicInterestRate(TEA, bond.getFrequency());
-        BigDecimal periodDiscountRate = getPeriodicDiscountRate(bond.getDiscountRate().divide(BigDecimal.valueOf(100), mc), bond.getFrequency());
-
+        BigDecimal periodDiscountRate = getPeriodDiscountRate(bond.getDiscountRate().divide(BigDecimal.valueOf(100), mc), bond.getFrequency());
         // Inicialización de variables
         List<CashFlowItem> cashFlowItems = new ArrayList<>();
         BigDecimal balance = bond.getNominalValue();
@@ -125,8 +124,7 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
 
     @Override
     public Optional<BondMetrics> generateBondMetrics(Bond bond, List<CashFlowItem> cashFlowItems) {
-        BigDecimal periodDiscountRate = getPeriodicDiscountRate(bond.getDiscountRate(), bond.getFrequency());
-
+        BigDecimal periodDiscountRate = getPeriodDiscountRate(bond.getDiscountRate().divide(BigDecimal.valueOf(100), mc), bond.getFrequency());
         // Calcular métricas del bono
         BigDecimal maxBondPrice = getMaxBondPrice(cashFlowItems.stream().map(CashFlowItem::getPresentCashFlow).toList()); // Flujos de caja al presente
         BigDecimal duration = getDuration(cashFlowItems.stream().map(CashFlowItem::getPresentCashFlowTimesPeriod).toList(),  // Flujos de caja al presente por periodo
@@ -135,8 +133,8 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         BigDecimal convexity = getConvexity(
                 cashFlowItems.stream().map(CashFlowItem::getConvexityFactor).toList(), // Factores de convexidad
                 maxBondPrice, periodDiscountRate);
-        BigDecimal tcea = getTREA(cashFlowItems, bond.getFrequency());
-        BigDecimal trea = getTCEA(cashFlowItems, bond.getFrequency());
+        BigDecimal tcea = getTCEA(cashFlowItems, bond.getFrequency());
+        BigDecimal trea = getTREA(cashFlowItems, bond.getFrequency());
 
         BondMetrics metrics = new BondMetrics(
                 null, bond,
@@ -151,9 +149,9 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         return Optional.of(metrics);
     }
 
-    private BigDecimal getPresentValue(BigDecimal value, BigDecimal discountRate, int period) {
+    private BigDecimal getPresentValue(BigDecimal value, BigDecimal periodDiscountRate, int period) {
         // (1 + r)^n donde r es la tasa de descuento y n es el periodo
-        BigDecimal divisor = BigDecimal.ONE.add(discountRate).pow(period, mc);
+        BigDecimal divisor = BigDecimal.ONE.add(periodDiscountRate).pow(period, mc);
         // Se calcula el valor presente del flujo de caja
         return value.divide(divisor, mc);
     }
@@ -169,7 +167,7 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         return maxPrice.setScale(2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal getDuration(List<BigDecimal> presentCashFlowsTimesPeriod, BigDecimal maxBondPrice) {
+    public BigDecimal getDuration(List<BigDecimal> presentCashFlowsTimesPeriod, BigDecimal maxBondPrice) {
         // Se inicializa la duración en 0
         BigDecimal sumPresentCashFlows = BigDecimal.ZERO;
         // Se suma el producto de los flujos de caja en tiempo presente por su periodo
@@ -180,9 +178,9 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         return sumPresentCashFlows.divide(maxBondPrice, mc);
     }
 
-    private BigDecimal getModifiedDuration(BigDecimal duration, BigDecimal discountRate) {
+    private BigDecimal getModifiedDuration(BigDecimal duration, BigDecimal periodDiscountRate) {
         // Se calcula la duración modificada como la duración dividida por (1 + COK)
-        return duration.divide(BigDecimal.ONE.add(discountRate), mc);
+        return duration.divide(BigDecimal.ONE.add(periodDiscountRate), mc);
     }
 
     private BigDecimal getConvexity(List<BigDecimal> convexityFactor, BigDecimal maxBondPrice, BigDecimal periodDiscountRate) {
@@ -210,20 +208,10 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
 
     // Conversiones de tasas de interés
 
-    private BigDecimal getPeriodicDiscountRate(BigDecimal discountRate, int frequency) {
-        // TEA -> TEP = (1+COK)^(1/n) - 1 donde n es numero de periodos en un año
-        BigDecimal base = BigDecimal.ONE.add(discountRate);
-        double exponent = BigDecimal.ONE.divide(BigDecimal.valueOf(frequency), mc).doubleValue();
-        double result = Math.pow(base.doubleValue(), exponent);
-        return BigDecimal.valueOf(result).subtract(BigDecimal.ONE);
-    }
-
     private BigDecimal getTEA(Bond bond) {
         if (bond.getInterestType().equals(InterestType.EFECTIVA)) {
-            // TEP% -> TEP
-            BigDecimal TEP = bond.getInterestRate().divide(BigDecimal.valueOf(100), mc);
-            // (1+TEP)^(n) = TEA - 1 donde n es el número de periodos en un año
-            return BigDecimal.ONE.add(TEP).pow(bond.getFrequency(), mc).subtract(BigDecimal.ONE);
+            // Tasa efectiva anual ya está en formato TEA
+            return bond.getInterestRate().divide(BigDecimal.valueOf(100), mc);
         } else {
             // Convertir tasa nominal a efectiva anual usando capitalización
             // TNP% -> TNP
@@ -236,10 +224,18 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
 
     private BigDecimal getPeriodicInterestRate(BigDecimal TEA, int frequency) {
         // TEA -> TEP = (1+TEA)^(1/n) - 1 donde n es el número de periodos en un año
-        double base = BigDecimal.ONE.add(TEA).doubleValue();
-        double exponent = 1.0 / frequency;
-        double result = Math.pow(base, exponent) - 1;
+        BigDecimal base = BigDecimal.ONE.add(TEA);
+        BigDecimal exponent = BigDecimal.ONE.divide(BigDecimal.valueOf(frequency), mc);
+        double result = Math.pow(base.doubleValue(), exponent.doubleValue()) - 1;
         return BigDecimal.valueOf(result);
+    }
+
+    private BigDecimal getPeriodDiscountRate(BigDecimal discountRate, int frequency) {
+        // TEA -> TEP = (1+COK)^(1/n) - 1 donde n es numero de periodos en un año
+        BigDecimal base = BigDecimal.ONE.add(discountRate);
+        double exponent = BigDecimal.ONE.divide(BigDecimal.valueOf(frequency), mc).doubleValue();
+        double result = Math.pow(base.doubleValue(), exponent);
+        return BigDecimal.valueOf(result).subtract(BigDecimal.ONE);
     }
 
     // Cálculo del TIR

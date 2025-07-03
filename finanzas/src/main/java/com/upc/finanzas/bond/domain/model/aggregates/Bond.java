@@ -42,14 +42,14 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     @DecimalMin("0.0")
     @DecimalMax("100.0")
     @Digits(integer = 8, fraction = 4)
-    private BigDecimal interestRate; // Tasa de interés del bono (%)
+    private BigDecimal interestRate; // Tasa de interés del bono (%) ANUAL
     @Max(365)
     @Min(1)
     private int capitalization; // Capitalización del interés (1: diaria, 7: semanal, 15: quincenal, 30: mensual, 60: bimestral, 90: trimestral, 180: semestral, 360: anual)
     @DecimalMin("0.0")
     @DecimalMax("100.0")
     @Digits(integer = 8, fraction = 4)
-    private BigDecimal discountRate; // Tasa COK (%)
+    private BigDecimal discountRate; // Tasa COK (%) ANUAL
     @NotNull(message = "La fecha de emisión es obligatoria")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate emissionDate;

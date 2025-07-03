@@ -43,10 +43,10 @@ public class BondMetrics {
      */
     @NotNull
     @Digits(integer = 3, fraction = 4)
-    private BigDecimal tcea;
+    private BigDecimal tcea; // Tasa de Costo Efectivo Anual (Emisor)
     @NotNull
     @Digits(integer = 3, fraction = 4)
-    private BigDecimal trea;
+    private BigDecimal trea; // Tasa de Rentabilidad Efectiva Anual (Bonista)
 
     public void update(BondMetrics updatedMetrics) {
         this.duration = updatedMetrics.getDuration();
