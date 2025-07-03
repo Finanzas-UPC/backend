@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public record UpdateBondCommand(
         Long bondId,
         String name,
-        BigDecimal amount,
+        BigDecimal nominalValue,
         BigDecimal marketValue,
         int duration,
         int frequency,

@@ -25,7 +25,7 @@ public class CashFlowItem {
      * Información de un flujo de caja específico
      */
     @PositiveOrZero
-    private int period; // Número del periodo de flujo de caja (1, 2, 3, ...)
+    private int period; // Número del periodo de flujo de caja (0, 1, 2, 3, ...)
     @NotNull
     private LocalDate paymentDate; // Fecha en la que se realiza el pago
     private boolean isGracePeriod; // Indica si este periodo es de gracia
@@ -53,21 +53,21 @@ public class CashFlowItem {
      * Flujo de caja del emisor y del bonista
      */
     @NotNull
-    @Digits(integer = 8, fraction = 2)
+    @Digits(integer = 8, fraction = 3)
     private BigDecimal issuerCashFlow; // Flujo del emisor (egreso para el emisor)
     @NotNull
-    @Digits(integer = 8, fraction = 2)
+    @Digits(integer = 8, fraction = 3)
     private BigDecimal bondHolderCashFlow; // Flujo del bonista (ingreso para el inversionista)
     /**
-     * Valores intermedios para cálculos financieros
+     * Valores intermedios para cálculos financieros (del bonista)
      */
     @NotNull
     @Digits(integer = 8, fraction = 2)
-    private BigDecimal discountedFlow; // Flujo actualizado descontado con la COK
+    private BigDecimal presentCashFlow; // Flujo actualizado descontado con la COK
     @NotNull
     @Digits(integer = 8, fraction = 2)
-    private BigDecimal discountedFlowTimesPeriod; // Producto del flujo actualizado por el periodo (para calcular duración)
+    private BigDecimal presentCashFlowTimesPeriod; // Producto del flujo actualizado por el periodo
     @NotNull
     @Digits(integer = 8, fraction = 2)
-    private BigDecimal convexityFactor; // Factor de convexidad del flujo de caja (para calcular convexidad)
+    private BigDecimal convexityFactor; // Producto de presentCashFlowTimesPeriod por el periodo + 1
 }

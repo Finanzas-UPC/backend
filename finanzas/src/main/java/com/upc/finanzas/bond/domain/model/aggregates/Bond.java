@@ -28,14 +28,14 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     private String name;
     @Digits(integer = 8, fraction = 2)
     @Positive
-    private BigDecimal amount; // Valor nominal del bono
+    private BigDecimal nominalValue; // Valor nominal del bono
     @Positive
     private BigDecimal marketValue; // Valor de mercado del bono
     @Positive
     private int duration; // Plazo total en años
     @Max(365)
     @Min(1)
-    private int frequency; // Frecuencia del cupon (1 diario, 30 mensual, ...)
+    private int frequency; // Frecuencia del cupon (1: anual, 2: semestral, 3: trimestral, 4: mensual)
     @NotNull(message = "Indicar el tipo de tasa de interés es obligatorio (efectiva o nominal)")
     @Enumerated(value = EnumType.STRING)
     private InterestType interestType; // Tipo de interés (efectiva o nominal)
@@ -45,7 +45,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     private BigDecimal interestRate; // Tasa de interés del bono (%)
     @Max(365)
     @Min(1)
-    private int capitalization;
+    private int capitalization; // Capitalización del interés (1: diaria, 7: semanal, 15: quincenal, 30: mensual, 60: bimestral, 90: trimestral, 180: semestral, 360: anual)
     @DecimalMin("0.0")
     @DecimalMax("100.0")
     @Digits(integer = 8, fraction = 4)
@@ -63,7 +63,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     private CurrencyType currency;
     /**
      * Gastos adicionales del bono
-     */
+     **/
     @DecimalMax("100.0")
     @Digits(integer = 8, fraction = 4)
     private BigDecimal primeRate; // Tasa prima (%)
@@ -83,7 +83,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     public Bond (User user, CreateBondCommand command) {
         this.user = user;
         this.name = command.name();
-        this.amount = command.amount();
+        this.nominalValue = command.nominalValue();
         this.marketValue = command.marketValue();
         this.duration = command.duration();
         this.frequency = command.frequency();
@@ -94,6 +94,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.emissionDate = command.emissionDate();
         this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType().toUpperCase());
         this.gracePeriodDuration = command.gracePeriodDuration();
+        this.currency = CurrencyType.valueOf(command.currency().toUpperCase());
         this.primeRate = command.primeRate();
         this.structuringRate = command.structuringRate();
         this.placementRate = command.placementRate();
@@ -103,7 +104,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
 
     public void update(UpdateBondCommand command) {
         this.name = command.name();
-        this.amount = command.amount();
+        this.nominalValue = command.nominalValue();
         this.marketValue = command.marketValue();
         this.duration = command.duration();
         this.frequency = command.frequency();
@@ -114,6 +115,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
         this.emissionDate = command.emissionDate();
         this.gracePeriodType = GracePeriodType.valueOf(command.gracePeriodType().toUpperCase());
         this.gracePeriodDuration = command.gracePeriodDuration();
+        this.currency = CurrencyType.valueOf(command.currency().toUpperCase());
         this.primeRate = command.primeRate();
         this.structuringRate = command.structuringRate();
         this.placementRate = command.placementRate();

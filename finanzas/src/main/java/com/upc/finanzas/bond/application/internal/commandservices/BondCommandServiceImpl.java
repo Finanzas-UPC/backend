@@ -74,6 +74,7 @@ public class BondCommandServiceImpl implements BondCommandService {
         cashFlowItemRepository.deleteAllByBond_Id(bond.getId());
         // Recalcular flujos
         var cashFlowItems = bondCalculatorService.generateCashFlowItems(bond);
+
         if (cashFlowItems.isEmpty()) throw new BondCashFlowException();
         cashFlowItemRepository.saveAll(cashFlowItems);
         // Recalcular métricas

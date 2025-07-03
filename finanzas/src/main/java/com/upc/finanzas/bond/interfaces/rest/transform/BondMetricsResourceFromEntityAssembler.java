@@ -8,6 +8,7 @@ public class BondMetricsResourceFromEntityAssembler {
         return new BondMetricsResource(
                 entity.getId(),
                 entity.getBond().getId(),
+                entity.getMaxPrice(),
                 entity.getDuration(),
                 entity.getConvexity(),
                 entity.getModifiedDuration(),

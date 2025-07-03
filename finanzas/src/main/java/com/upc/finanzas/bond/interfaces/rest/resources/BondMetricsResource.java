@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public record BondMetricsResource(
         Long id,
         Long bondId,
+        BigDecimal maxPrice,
         BigDecimal duration,
         BigDecimal convexity,
         BigDecimal modifiedDuration,

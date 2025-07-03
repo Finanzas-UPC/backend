@@ -26,7 +26,7 @@ class BondCalculatorServiceImplTest {
                 user.getId(),
                 "Bono de prueba",
                 BigDecimal.valueOf(30000),
-                BigDecimal.valueOf(30000),
+                BigDecimal.valueOf(40000),
                 5,
                 4,
                 "NOMINAL",
@@ -35,7 +35,13 @@ class BondCalculatorServiceImplTest {
                 BigDecimal.valueOf(4.5),
                 LocalDate.of(2025, 5, 10),
                 "TOTAL",
-                5
+                5,
+                "PEN",
+                BigDecimal.valueOf(1.0),
+                BigDecimal.valueOf(0.25),
+                BigDecimal.valueOf(0.45),
+                BigDecimal.valueOf(0.5),
+                BigDecimal.valueOf(0.5)
         );
         return new Bond(user, command);
     }
@@ -44,6 +50,10 @@ class BondCalculatorServiceImplTest {
     void generateCashFlowItems() {
         Bond bond = createSampleBond();
         List<CashFlowItem> items = service.generateCashFlowItems(bond);
+
+        for (CashFlowItem item : items) {
+            System.out.println("CashFlowItem: " + item.getBondHolderCashFlow());
+        }
 
         assertNotNull(items);
         assertEquals(bond.getDuration() * bond.getFrequency() + 1, items.size()); // +1 por periodo 0

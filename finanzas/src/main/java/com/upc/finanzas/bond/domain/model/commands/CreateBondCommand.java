@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public record CreateBondCommand(
         Long userId,
         String name,
-        BigDecimal amount,
+        BigDecimal nominalValue,
         BigDecimal marketValue,
         int duration,
         int frequency,

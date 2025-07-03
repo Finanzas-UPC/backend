@@ -12,7 +12,7 @@ public class BondResourceFromEntityAssembler {
                 entity.getId(),
                 entity.getUser().getId(),
                 entity.getName(),
-                entity.getAmount(),
+                entity.getNominalValue(),
                 entity.getMarketValue(),
                 entity.getDuration(),
                 entity.getFrequency(),
