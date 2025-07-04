@@ -1,16 +1,13 @@
 package com.upc.finanzas.bond.interfaces.rest;
 
 import com.upc.finanzas.bond.domain.exceptions.ConfigurationNotFoundException;
-import com.upc.finanzas.bond.domain.model.commands.DeleteConfigurationCommand;
 import com.upc.finanzas.bond.domain.model.queries.GetConfigurationByIdQuery;
 import com.upc.finanzas.bond.domain.model.queries.GetConfigurationByUserIdQuery;
 import com.upc.finanzas.bond.domain.services.ConfigurationCommandService;
 import com.upc.finanzas.bond.domain.services.ConfigurationQueryService;
 import com.upc.finanzas.bond.interfaces.rest.resources.ConfigurationResource;
-import com.upc.finanzas.bond.interfaces.rest.resources.CreateConfigurationResource;
 import com.upc.finanzas.bond.interfaces.rest.resources.UpdateConfigurationResource;
 import com.upc.finanzas.bond.interfaces.rest.transform.ConfigurationResourceFromEntityAssembler;
-import com.upc.finanzas.bond.interfaces.rest.transform.CreateConfigurationCommandFromResourceAssembler;
 import com.upc.finanzas.bond.interfaces.rest.transform.UpdateConfigurationCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -52,5 +49,7 @@ public class ConfigurationController {
         var configurationResource = ConfigurationResourceFromEntityAssembler.toResourceFromEntity(configuration.get());
         return ResponseEntity.ok(configurationResource);
     }
+
+
 
 }

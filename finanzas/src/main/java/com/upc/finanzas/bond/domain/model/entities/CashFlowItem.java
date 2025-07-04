@@ -53,10 +53,8 @@ public class CashFlowItem {
      * Flujo de caja del emisor y del bonista
      */
     @NotNull
-    @Digits(integer = 8, fraction = 3)
     private BigDecimal issuerCashFlow; // Flujo del emisor (egreso para el emisor)
     @NotNull
-    @Digits(integer = 8, fraction = 3)
     private BigDecimal bondHolderCashFlow; // Flujo del bonista (ingreso para el inversionista)
     /**
      * Valores intermedios para cálculos financieros (del bonista)

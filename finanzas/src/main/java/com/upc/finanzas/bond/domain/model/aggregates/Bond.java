@@ -35,7 +35,7 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     private int duration; // Plazo total en años
     @Max(365)
     @Min(1)
-    private int frequency; // Frecuencia del cupon (1: anual, 2: semestral, 3: trimestral, 4: mensual)
+    private int frequency; // Frecuencia del cupon (1: anual, 2: semestral, 3: trimestral, 4: cuatrimestral, 6: bimestral, 12: mensual, 365: diario)
     @NotNull(message = "Indicar el tipo de tasa de interés es obligatorio (efectiva o nominal)")
     @Enumerated(value = EnumType.STRING)
     private InterestType interestType; // Tipo de interés (efectiva o nominal)
