@@ -24,28 +24,22 @@ public class BondMetrics {
      * Precio máximo del bono
      */
     @NotNull
-    @Digits(integer = 5, fraction = 2)
     private BigDecimal maxPrice;
     /**
      * Ratios de decisión del bono
      */
     @NotNull
-    @Digits(integer = 5, fraction = 2)
     private BigDecimal duration;
     @NotNull
-    @Digits(integer = 6, fraction = 2)
     private BigDecimal convexity;
     @NotNull
-    @Digits(integer = 5, fraction = 2)
     private BigDecimal modifiedDuration;
     /**
      * Indicadores de rentabilidad del bono
      */
     @NotNull
-    @Digits(integer = 3, fraction = 4)
     private BigDecimal tcea; // Tasa de Costo Efectivo Anual (Emisor)
     @NotNull
-    @Digits(integer = 3, fraction = 4)
     private BigDecimal trea; // Tasa de Rentabilidad Efectiva Anual (Bonista)
 
     public void update(BondMetrics updatedMetrics) {
