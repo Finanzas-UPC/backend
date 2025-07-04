@@ -21,7 +21,7 @@ Este proyecto corresponde al backend de una aplicación web desarrollada como pa
 - Spring Boot 3.5
 - Spring Data JPA
 - Spring Security
-- MySQL
+- PostgreSQL
 - OpenAPI (Swagger)
 - Lombok
 
