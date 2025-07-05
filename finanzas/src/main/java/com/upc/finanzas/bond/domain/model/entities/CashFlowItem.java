@@ -55,9 +55,12 @@ public class CashFlowItem {
      * Valores intermedios para cálculos financieros (del bonista)
      */
     @NotNull
+    @Column(precision = 18, scale = 6)
     private BigDecimal presentCashFlow; // Flujo actualizado descontado con la COK
     @NotNull
+    @Column(precision = 18, scale = 6)
     private BigDecimal presentCashFlowTimesPeriod; // Producto del flujo actualizado por el periodo
     @NotNull
+    @Column(precision = 18, scale = 6)
     private BigDecimal convexityFactor; // Producto de presentCashFlowTimesPeriod por el periodo + 1
 }

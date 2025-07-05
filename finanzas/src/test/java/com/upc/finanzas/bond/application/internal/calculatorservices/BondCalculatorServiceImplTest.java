@@ -40,7 +40,7 @@ class BondCalculatorServiceImplTest {
                 "PEN",
                 BigDecimal.valueOf(1.0),
                 BigDecimal.valueOf(1.0),
-                BigDecimal.valueOf(1.25),
+                BigDecimal.valueOf(0.25),
                 BigDecimal.valueOf(0.45),
                 BigDecimal.valueOf(0.5)
         );
@@ -69,12 +69,9 @@ class BondCalculatorServiceImplTest {
         assertTrue(metricsOpt.isPresent());
         BondMetrics metrics = metricsOpt.get();
 
-        assertNotNull(metrics.getDuration());
-        assertNotNull(metrics.getConvexity());
-        assertNotNull(metrics.getTcea());
-        assertNotNull(metrics.getTrea());
-
-        assertTrue(metrics.getTcea().compareTo(BigDecimal.ZERO) > 0);
-        assertTrue(metrics.getTrea().compareTo(BigDecimal.ZERO) > 0);
+        assertEquals(metrics.getMaxPrice(), BigDecimal.valueOf(10933.96));
+        assertEquals(metrics.getConvexity(), BigDecimal.valueOf(87.62));
+        assertEquals(metrics.getTcea(), BigDecimal.valueOf(0.069544421));
+        assertEquals(metrics.getTrea(), BigDecimal.valueOf(0.052232911));
     }
 }

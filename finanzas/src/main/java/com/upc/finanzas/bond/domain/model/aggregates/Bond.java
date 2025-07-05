@@ -40,12 +40,14 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     private InterestType interestType; // Tipo de interés (efectiva o nominal)
     @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal interestRate; // Tasa de interés del bono (%) ANUAL
     @Max(365)
     @Min(1)
     private int capitalization; // Capitalización del interés (1: diaria, 7: semanal, 15: quincenal, 30: mensual, 60: bimestral, 90: trimestral, 180: semestral, 360: anual)
     @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal discountRate; // Tasa COK (%) ANUAL
     @NotNull(message = "La fecha de emisión es obligatoria")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
@@ -61,15 +63,25 @@ public class Bond extends AuditableAbstractAggregateRoot<Bond> {
     /**
      * Gastos adicionales del bono
      **/
+    @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal primeRate; // Tasa prima (%)
+    @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal structuringRate; // Tasa de estructuración (%)
+    @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal placementRate; // Tasa de colocación (%)
+    @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal floatRate; // Tasa de flotación (%)
+    @DecimalMin("0.0")
     @DecimalMax("100.0")
+    @Column(precision = 10, scale = 7)
     private BigDecimal cavaliRate; // Tasa de CAVALI (%)
 
     public Bond (User user, CreateBondCommand command) {

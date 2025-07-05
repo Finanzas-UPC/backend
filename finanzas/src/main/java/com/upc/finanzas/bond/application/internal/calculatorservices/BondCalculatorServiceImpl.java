@@ -113,9 +113,9 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
                     totalPayment.setScale(2, RoundingMode.HALF_UP),
                     issuerCashFlow.setScale(2, RoundingMode.HALF_UP),
                     bondHolderCashFlow.setScale(2, RoundingMode.HALF_UP),
-                    presentFlow.setScale(2, RoundingMode.HALF_UP),
-                    presentFlowTimesPeriod.setScale(2, RoundingMode.HALF_UP),
-                    convexityFactor.setScale(2, RoundingMode.HALF_UP)
+                    presentFlow.setScale(6, RoundingMode.HALF_UP),
+                    presentFlowTimesPeriod.setScale(6, RoundingMode.HALF_UP),
+                    convexityFactor.setScale(6, RoundingMode.HALF_UP)
             ));
             balance = finalBalance; // Actualizar el balance para el siguiente periodo
         }
@@ -142,8 +142,8 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
                 duration.setScale(2, RoundingMode.HALF_UP),
                 convexity.setScale(2, RoundingMode.HALF_UP),
                 modifiedDuration.setScale(2, RoundingMode.HALF_UP),
-                tcea.setScale(4, RoundingMode.HALF_UP),
-                trea.setScale(4, RoundingMode.HALF_UP)
+                tcea.setScale(9, RoundingMode.HALF_UP),
+                trea.setScale(9, RoundingMode.HALF_UP)
         );
 
         return Optional.of(metrics);
@@ -262,7 +262,6 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
 
         BrentSolver solver = new BrentSolver(1e-10, 1e-14);
         double irr = solver.solve(1000, npvFunction, -0.9999, 1.0, 0.1); // intervalo de búsqueda
-
         return BigDecimal.valueOf(irr).setScale(10, RoundingMode.HALF_UP);
     }
 }

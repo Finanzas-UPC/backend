@@ -38,11 +38,14 @@ public class BondMetrics {
      * Indicadores de rentabilidad del bono
      */
     @NotNull
+    @Column(precision = 12, scale = 10)
     private BigDecimal tcea; // Tasa de Costo Efectivo Anual (Emisor)
     @NotNull
+    @Column(precision = 12, scale = 10)
     private BigDecimal trea; // Tasa de Rentabilidad Efectiva Anual (Bonista)
 
     public void update(BondMetrics updatedMetrics) {
+        this.maxPrice = updatedMetrics.getMaxPrice();
         this.duration = updatedMetrics.getDuration();
         this.convexity = updatedMetrics.getConvexity();
         this.modifiedDuration = updatedMetrics.getModifiedDuration();
