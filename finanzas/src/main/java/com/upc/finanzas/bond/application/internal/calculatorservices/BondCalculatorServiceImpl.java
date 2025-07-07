@@ -35,10 +35,10 @@ public class BondCalculatorServiceImpl implements BondCalculatorService {
         LocalDate currentDate = bond.getEmissionDate();
         BigDecimal initialExpensesIssuer = (bond.getStructuringRate().add(bond.getPlacementRate()).add(bond.getFloatRate()).add(bond.getCavaliRate()))
                 .divide(BigDecimal.valueOf(100), mc)
-                .multiply(bond.getMarketValue()); // Gastos iniciales del emisor
-        BigDecimal initialExpensesBondHolder = (bond.getStructuringRate().add(bond.getPlacementRate()).add(bond.getFloatRate()).add(bond.getCavaliRate()))
+                .multiply(bond.getMarketValue()); // Gastos iniciales del emisor (todos)
+        BigDecimal initialExpensesBondHolder = (bond.getFloatRate()).add(bond.getCavaliRate())
                 .divide(BigDecimal.valueOf(100), mc)
-                .multiply(bond.getMarketValue()); // Gastos iniciales del bonista
+                .multiply(bond.getMarketValue()); // Gastos iniciales del bonista (flotacion y cavali)
 
         BigDecimal issuerCashFlow = bond.getMarketValue().subtract(initialExpensesIssuer); // Flujo de caja del emisor (ingreso para el emisor)
         BigDecimal bondHolderCashFlow = bond.getMarketValue().add(initialExpensesBondHolder); // Flujo de caja del bonista (inversor)

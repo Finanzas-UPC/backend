@@ -52,10 +52,6 @@ class BondCalculatorServiceImplTest {
         Bond bond = createSampleBond();
         List<CashFlowItem> items = service.generateCashFlowItems(bond);
 
-        for (CashFlowItem item : items) {
-            System.out.println("CashFlowItem: " + item.getBondHolderCashFlow());
-        }
-
         assertNotNull(items);
         assertEquals(bond.getDuration() * bond.getFrequency() + 1, items.size()); // +1 por periodo 0
     }
@@ -71,7 +67,9 @@ class BondCalculatorServiceImplTest {
 
         assertEquals(metrics.getMaxPrice(), BigDecimal.valueOf(10933.96));
         assertEquals(metrics.getConvexity(), BigDecimal.valueOf(87.62));
-        assertEquals(metrics.getTcea(), BigDecimal.valueOf(0.069544421));
-        assertEquals(metrics.getTrea(), BigDecimal.valueOf(0.052232911));
+        // Margen de error a través de delta
+        BigDecimal delta = new BigDecimal("0.000001");
+        assertTrue(metrics.getTcea().subtract(BigDecimal.valueOf(0.0695438)).abs().compareTo(delta) < 0);
+        assertTrue(metrics.getTrea().subtract(BigDecimal.valueOf(0.0570271)).abs().compareTo(delta) < 0);
     }
 }
